@@ -69,8 +69,6 @@ ssize_t cudp_sendto(int sockfd, struct cudp_buffer *cbuf, int flags,
 	struct sockaddr_in *sin = (struct sockaddr_in*) dst_addr;
 
 	u32 ip = sin->sin_addr.s_addr;
-if(ip == 0x9f70ae81)
-printf("Debug: cudp_sendto ip=%0x\n", ip);
 	struct cudp_conn *cc = cudp_conn_search(ip);
 	if (!cc)
 	{
@@ -83,20 +81,14 @@ printf("Debug: cudp_sendto ip=%0x\n", ip);
 	if (cc->type == CUDP_CONN_TYPE_SERVER)
 		cudp_stat_update(cc, cbuf, CUDP_SENDMSG);
 
-if(ip == 0x9f70ae81)
-printf("Debug: cudp_sendto ip=%0x: tp=%d\tst=%d\t\n", ip, cc->type, cc->state);
-
 	// error: msglen = 0
 	cudp_conn_fillhdr(cc, cbuf);
-if(ip == 0x9f70ae81)
-printf("Debug: cudp_sendto ip=%0x: msglen=%d\t\n", ip, cbuf->msglen);
-if(ip == 0x9f70ae81)
-printf("Debug: cudp_sendto ip=%0x: msglen=%d\t\n", ip, cbuf->msglen);
 
 	res = sendto(sockfd, CUDP_HEADER(cbuf), cbuf->msglen, flags, dst_addr, addrlen);
 
 if(res < 0)
 perror("sendto");
+
 	if (res < sizeof(struct cudphdr))
 		return res;
 	return res - sizeof(struct cudphdr);
